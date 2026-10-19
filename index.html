@@ -1,0 +1,175 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="theme-color" content="#f6f8f5" />
+    <meta name="description" content="南京旅行景点选择册：按日期、半天与片区筛选，和同行者交换选择。" />
+    <title>南京旅行选择册 · 2026.10</title>
+    <link rel="stylesheet" href="styles.css" />
+    <script type="module" src="src/app.js"></script>
+  </head>
+  <body>
+    <header class="topbar">
+      <a class="brand" href="#top" aria-label="南京旅行选择册首页">
+        <span class="brand-mark">宁</span>
+        <span>南京旅行选择册</span>
+      </a>
+      <span class="edition">2026 · AUTUMN</span>
+    </header>
+
+    <main id="top">
+      <section class="masthead" aria-labelledby="page-title">
+        <div class="masthead-copy">
+          <div class="eyebrow"><span class="eyebrow-dot"></span> 南京 · 10月24日—26日</div>
+          <h1 id="page-title">先定半天，再定一片。</h1>
+          <p class="masthead-note">五个片区，慢慢挑。选定一处后，只沿着附近继续走。</p>
+          <div class="date-ribbon" aria-label="旅行日期">
+            <span><b>24</b><i>周六</i></span>
+            <span><b>25</b><i>周日</i></span>
+            <span><b>26</b><i>周一</i></span>
+          </div>
+        </div>
+      </section>
+
+      <nav class="view-tabs" aria-label="页面视图">
+        <button class="view-tab is-active" type="button" data-view="catalog" aria-selected="true">景点手册</button>
+        <button class="view-tab" type="button" data-view="planner" aria-selected="false">我的行程</button>
+        <button class="view-tab" type="button" data-view="summary" aria-selected="false">同行选择 <span id="shared-count" class="tab-count">0</span></button>
+      </nav>
+
+      <section id="catalog-view" class="view-panel" aria-label="南京景点手册">
+        <div class="planner-intro catalog-intro">
+          <div>
+            <p class="section-kicker">01 / 景点手册</p>
+            <h2>南京景点一览</h2>
+          </div>
+          <span id="catalog-count" class="result-count"></span>
+        </div>
+        <div id="route-suggestions" class="route-suggestions"></div>
+        <div class="catalog-filters">
+          <label for="catalog-search" class="catalog-search-label">搜索景点</label>
+          <input id="catalog-search" type="search" placeholder="景点名、活动或介绍" autocomplete="off" />
+          <label for="catalog-area" class="catalog-area-label">片区</label>
+          <select id="catalog-area"><option value="all">全部片区</option></select>
+        </div>
+        <div id="catalog-list" class="catalog-list"></div>
+      </section>
+
+      <section id="planner-view" class="view-panel" aria-label="我的行程选择" hidden>
+        <div class="planner-intro">
+          <div>
+            <p class="section-kicker">01 / 我的选择</p>
+            <h2>这份行程，属于谁？</h2>
+          </div>
+          <button id="share-open" class="button button-primary" type="button">下载我的选择</button>
+        </div>
+
+        <div class="profile-row">
+          <label class="name-field" for="traveler-name">
+            <span>昵称</span>
+            <input id="traveler-name" type="text" maxlength="24" placeholder="输入大家熟悉的称呼" autocomplete="nickname" />
+          </label>
+          <fieldset class="attendance-field">
+            <legend>我会参加</legend>
+            <div id="attendance-days" class="check-group"></div>
+          </fieldset>
+        </div>
+
+        <div class="selection-grid">
+          <aside class="day-rail">
+            <p class="section-kicker">选日期</p>
+            <div id="day-tabs" class="day-tabs" role="tablist" aria-label="选择旅行日期"></div>
+            <p class="attendance-hint" id="attendance-hint"></p>
+          </aside>
+          <div class="day-content">
+            <div class="period-row">
+              <div id="period-tabs" class="period-tabs" role="tablist" aria-label="选择游玩时段"></div>
+              <span class="period-limit">每半天约 4 小时</span>
+            </div>
+
+            <div class="route-heading">
+              <div>
+                <p class="section-kicker">先选一个起点片区</p>
+                <h2 id="slot-title">周六 · 上午</h2>
+              </div>
+              <span id="route-state" class="route-state">尚未选片区</span>
+            </div>
+            <div id="area-list" class="area-list" aria-label="选择起点片区"></div>
+            <p id="route-guidance" class="route-guidance">选定片区后，景点列表会收窄到本区和紧邻片区。</p>
+            <p id="day-transition" class="day-transition" hidden></p>
+            <p class="estimate-disclaimer">估算可信度偏低：按常见参观节奏与片区距离人工粗估，不是地图导航或实时路况；排队、步速和等车都会改变实际用时。</p>
+            <div id="budget-row" class="budget-row" hidden>
+              <div class="budget-label"><span>本时段预计</span><b id="budget-text"></b></div>
+              <div class="budget-track"><span id="budget-fill"></span></div>
+            </div>
+
+            <div class="attraction-heading">
+              <div>
+                <p class="section-kicker">沿着附近选</p>
+                <h3 id="attraction-heading">景点清单</h3>
+              </div>
+              <span id="result-count" class="result-count"></span>
+            </div>
+            <div id="attraction-list" class="attraction-list" aria-live="polite"></div>
+          </div>
+        </div>
+      </section>
+
+      <section id="summary-view" class="view-panel" aria-label="同行选择汇总" hidden>
+        <div class="planner-intro summary-intro">
+          <div>
+            <p class="section-kicker">02 / 同行选择</p>
+            <h2>把各自的想法放在一起。</h2>
+          </div>
+          <div class="summary-actions">
+            <button id="import-open" class="button button-secondary" type="button">导入选择文件</button>
+            <button id="board-share" class="button button-primary" type="button">下载汇总</button>
+          </div>
+        </div>
+        <div class="summary-note"><span class="note-mark">↓</span> 收到群友的选择文件后导入；汇总文件可带上目前全部选择。</div>
+        <div id="summary-empty" class="summary-empty">
+          <span class="empty-stamp">同行</span>
+          <h3>还没有导入同行的选择</h3>
+          <p>先完成自己的时段选择，再把 JSON 文件发到群里。</p>
+          <button class="text-button" type="button" data-view="planner">去选景点 <span aria-hidden="true">→</span></button>
+        </div>
+        <div id="summary-list" class="summary-list"></div>
+        <div id="interest-summary" class="interest-summary" hidden>
+          <div class="route-heading">
+            <div>
+              <p class="section-kicker">选择重合度</p>
+              <h3>哪些地方都想去？</h3>
+            </div>
+          </div>
+          <div id="interest-list" class="interest-list"></div>
+        </div>
+      </section>
+
+      <footer class="page-footer">
+        <div class="footer-rule"></div>
+        <p>门票与开放安排以景区官方发布为准 · 票价为成人参考价</p>
+      </footer>
+    </main>
+
+    <dialog id="import-dialog" class="app-dialog">
+      <form method="dialog" class="dialog-topline">
+        <span class="section-kicker">导入同行选择</span>
+        <button class="close-button" aria-label="关闭">×</button>
+      </form>
+      <h2>选择群友发来的 JSON 文件</h2>
+      <p class="dialog-description">个人文件和汇总文件都可以导入。导入后保存在这台设备上。</p>
+      <label class="file-picker" for="import-file">选择 JSON 文件<input id="import-file" type="file" accept="application/json,.json" /></label>
+    </dialog>
+
+    <dialog id="spot-dialog" class="app-dialog spot-dialog">
+      <form method="dialog" class="dialog-topline">
+        <span class="section-kicker">景点信息</span>
+        <button class="close-button" aria-label="关闭">×</button>
+      </form>
+      <div id="spot-detail"></div>
+    </dialog>
+
+    <div id="toast" class="toast" role="status" aria-live="polite"></div>
+  </body>
+</html>

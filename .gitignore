@@ -1,0 +1,12 @@
+node_modules/
+dist/
+.local/
+.env
+.env.*
+!.env.example
+.DS_Store
+coverage/
+.playwright/
+南京景点图文手册.html
+实景图片/
+图片核查.json
